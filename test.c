@@ -6,6 +6,9 @@ int main(int argc, char *argv[ ])
   int i;
 
   int pid = getpid();
+
+  printf("test.c file started.");
+
   printf("proc %d running test program\n", pid);
 
   printf("argc = %d\n", argc);
