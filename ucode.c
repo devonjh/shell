@@ -32,6 +32,10 @@ extern char cr;
 
 //void putchar(const char c){ }
 
+void myStrTok(char **str, char delim) {             //tokenize the given string based on the delim given to the method.
+
+}
+
 int getc()
 {
    int c, n;
@@ -56,10 +60,12 @@ int getline(char *s)
   char *cp = s;
   
   c = getc();
+  mputc(c);
 
   while ((c != EOF) && (c != '\r') && (c != '\n')){
     *cp++ = c;
      c = getc();
+     mputc(c);
   }
   if (c==EOF) return 0;
 
