@@ -32,8 +32,77 @@ extern char cr;
 
 //void putchar(const char c){ }
 
-void myStrTok(char **str, char delim) {             //tokenize the given string based on the delim given to the method.
+int strCmp( const char *s1, const char *s2 )
+{
+    const unsigned char *p1 = ( const unsigned char * )s1;
+    const unsigned char *p2 = ( const unsigned char * )s2;
 
+    while ( *p1 && *p1 == *p2 ) ++p1, ++p2;
+
+    return ( *p1 > *p2 ) - ( *p2  > *p1 );
+}
+
+char *strtok(char *source, const char *delimeter)
+{
+	static char *nextToken;
+	char *token = 0;
+
+	if (!source)
+		source = nextToken;
+
+  while (*source) 
+  {
+		const char *pp = delimeter;
+    while (*pp) 
+    {
+      if (*pp == *source) 
+      {
+				break;
+			}
+			pp++;
+		}
+    if (!*pp) 
+    {
+			if (!token)
+				token = source;
+			else if (!source[-1])
+				break;
+    } 
+    else
+			*source = '\0';
+		source++;
+	}
+
+	nextToken = source;
+
+	return token;
+}
+
+char* strtok1(char *str, const char* delim) {
+  static char* _buffer;
+  if(str != '\0') _buffer = str;
+  if(_buffer[0] == '\0') return '\0';
+
+  char *ret = _buffer, *b;
+  const char *d;
+
+  for(b = _buffer; *b !='\0'; b++) {
+      for(d = delim; *d != '\0'; d++) {
+          if(*b == *d) {
+              *b = '\0';
+              _buffer = b+1;
+
+              // skip the beginning delimiters
+              if(b == ret) { 
+                  ret++; 
+                  continue; 
+              }
+              return ret;
+          }
+      }
+  }
+
+  return ret;
 }
 
 int getc()
