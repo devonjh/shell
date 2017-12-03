@@ -25,7 +25,23 @@ int main(int argc, char *argv[ ]) {
   }
 
   else {
-      prints("We gotta do some weird shit.\n");
+      prints("No file specified. Use stdin and stdout.\n");
+
+      fd = 0;
+
+      while (1) {
+          i = read(fd, &c, 1);
+
+          if (c == 13) {
+            c = '\n';
+          }
+
+          if (c == 4 || !i) {
+              return;
+          }
+
+          mputc(c);
+      }
   }
 
 }
