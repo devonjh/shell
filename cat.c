@@ -29,6 +29,8 @@ int main(int argc, char *argv[ ]) {
 
       fd = 0;
 
+      prints("\n**********DEVON'S CAT... MEOW?**********\n\n");
+
       while (1) {
           i = read(fd, &c, 1);
 
@@ -37,11 +39,11 @@ int main(int argc, char *argv[ ]) {
           }
 
           if (c == 4 || !i) {
-              return;
+            prints("\n****************************************\n\n");
+            return;
           }
 
           mputc(c);
       }
   }
-
 }
