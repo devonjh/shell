@@ -32,6 +32,35 @@ extern char cr;
 
 //void putchar(const char c){ }
 
+int searchString(char src[], char str[]) {
+  int i, j, firstOcc;
+  i = 0, j = 0;
+
+  while (src[i] != '\0') {
+
+     while (src[i] != str[0] && src[i] != '\0')
+        i++;
+
+     if (src[i] == '\0')
+        return (-1);
+
+     firstOcc = i;
+
+     while (src[i] == str[j] && src[i] != '\0' && str[j] != '\0') {
+        i++;
+        j++;
+     }
+
+     if (str[j] == '\0')
+        return 1;
+     if (src[i] == '\0')
+        return (-1);
+
+     i = firstOcc + 1;
+     j = 0;
+  }
+}
+
 int strCmp( const char *s1, const char *s2 )
 {
     const unsigned char *p1 = ( const unsigned char * )s1;
