@@ -5,10 +5,7 @@ int console;
 int parent() {      //Code for P1.
     int pid, status;
 
-    prints("\ninit.c -> parent.\n");
-
-    while (1) {                             
-        prints("INIT File.\n");
+    while (1) {
         pid = wait(&status);                //wait for exit status from child process.
         if (pid == console) {
             prints("INIT: forks a new console for login.c\n");
@@ -32,7 +29,7 @@ int main(int argc, char *argv[]) {
     in = open("/dev/tty0", O_RDONLY);
     out = open("/dev/tty0", O_WRONLY);
 
-    prints("\ninit.c -> main.\n");
+    prints("\n********** DEVON'S INIT **********\n\n");
 
     prints("INIT: fork a login proc on console.\n");
 
