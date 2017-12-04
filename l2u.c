@@ -1,7 +1,7 @@
 #include "ucode.c"
 
 int main(int argc, char *argv[]) {
-    int fd1, fd2, i, toScreen;
+    int fd1, fd2, i, toScreen = 0;
     char c;
 
     prints("\n********** DEVON'S L2U IN ACTION **********\n");
@@ -9,6 +9,12 @@ int main(int argc, char *argv[]) {
     if (argc < 2) {
         prints("Incorrect input given.\n");
         exit(1);
+    }
+
+    if (argc == 2) {
+        fd1 = open(argv[1], O_RDONLY);
+        fd2 = 1;
+        toScreen = 1;
     }
 
     if (argc == 3) {
@@ -34,7 +40,12 @@ int main(int argc, char *argv[]) {
             c -= 32;                    //convert c to uppercase equivalent.
         }
 
-        i = write(fd2, &c, 1);
+        if (toScreen && c == '\n') {
+            mputc('\n');
+            mputc('\r');
+        } else {
+            i = write(fd2, &c, 1);
+        }
 
         if (!i) {
             prints("Error writing to file.\n");
