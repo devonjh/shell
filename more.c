@@ -69,7 +69,7 @@ int main(int argc, char *argv[ ]) {
                 case '\r':
                     debug = printNewLine(fd);
                     break;
-                case 4:
+                case 'q':
                     mputc('\n');
                     close(fd);
                     return 0;
