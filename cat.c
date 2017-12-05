@@ -14,9 +14,15 @@ int main(int argc, char *argv[ ]) {
 
     prints("\n**********DEVON'S CAT... MEOW?**********\n\n");
 
-    while (i = read(fd, catBuf, 1024)) {
-        catBuf[i] = '\0';
-        printf("%s", catBuf);
+    while (i = read(fd, &c, 1)) {
+        //catBuf[i] = '\0';
+        if (c == '\n') {
+          i = write(1, &c, 1);
+          c = '\r';
+          i = write(1, &c, 1);
+        } else {
+          i = write(1, &c, 1);
+        }
     }
 
     prints("\n****************************************\n\n");

@@ -43,6 +43,10 @@ int main(int argc, char *argv[ ]) {
 
     prints("\n********** DEVON'S GREP **********\n\n");
 
+    if (argc == 2) {
+        fd = 0;
+    }
+
     if ((fd = open(argv[2], 0)) < 0) {
         prints("ERROR opening file.\n");
         exit(1);
