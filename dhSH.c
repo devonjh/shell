@@ -12,8 +12,55 @@ int tokenizeCommand() {
     printf("simpleCommand = %s\n",  simpleCommand);
 }
 
-int Execute(char *cmd) {
-    int i = 0;
+int runCommand(char *cmd) {
+    int i = 0, hasPipe, debug = 0, pid;
+
+    if ((strcmp(cmd, "\0")) == 0) {
+        //prints("Invalid command.\n");
+        return -1;
+    }
+
+    pid = fork();
+
+    if (pid < 0) {
+        prints("Error forking child.\n");
+        exit(1);
+    }
+    
+    if (pid) {          //parent
+        pid = wait(&debug);
+    }
+
+    else {
+
+        hasPipe = containsPipe(cmd);
+
+        if (hasPipe) {                  //at least one pip within command.
+            doPipe(cmd);
+        }
+
+        else {
+            //tokenizeCommand();
+            
+            /*if (!strcmp(simpleCommand, "logout")) {               //handle logout seperately
+                prints("Logging out . . .\n");
+                exit(1);
+            }
+    
+            if (!strcmp(simpleCommand, "cd")) {
+                prints("Change dir.\n");
+            }
+    
+            else {
+                printf("simpleCommand within main: %s\n", simpleCommand);
+                exec(cmd);
+            }*/
+
+            exec(cmd);
+        }
+    }
+    
+    return 1;
 }
 
 int myMemset(char *string, int length) {
@@ -40,13 +87,6 @@ int getCommand() {
 
     gets(cmd);
 
-    if (!cmd) {
-        prints("Error getting command from user.\n");
-        return -1;
-    }
-
-    printf("cmd = %s\n", cmd);
-
     return 0;
 }
 
@@ -55,6 +95,18 @@ int containsPipe(char *cmd) {
 
     for (i = 0; i < len; i++) {
         if (cmd[i] == '|') {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+int containsRedirection(char *cmd) {
+    int i = 0, len = strlen(cmd);
+
+    for (i = 0; i < len; i++) {                     //search through each char in string.
+        if (cmd[i] == '>' || cmd[i] == '<') {       //if current char is a redirection, return 1.
             return 1;
         }
     }
@@ -105,9 +157,6 @@ int doPipe(char *cmd) {
     pipeHead(cmd, head);
     pipeTail(cmd, tail);
 
-    printf("head = %s\n", head);
-    printf("tail = %s\n", tail);
-
     pid = fork();
 
     if (pid) {              //parent.
@@ -115,7 +164,6 @@ int doPipe(char *cmd) {
         dup2(pd[0], 0);
 
         if (containsPipe(tail)) {
-            prints("Another pipe found.\n");
             doPipe(tail);
         }
 
@@ -127,10 +175,12 @@ int doPipe(char *cmd) {
     else {                  //child
         close(pd[0]);
         dup2(pd[1], 1);
+
+        //Have to check for file redirection.
+
+        //if no redirection.
         exec(head);
     }
-
-    return 1;
 
 }
 
@@ -145,40 +195,10 @@ int main(int argc, char *argv[]) {
         resetStrings();                     //Clear global command char arry.
 
         debug = getCommand();           //Get the user command.
-        hasPipe = containsPipe(cmd);
 
-        pipeHead(cmd, tempString);
-
-        if (hasPipe) {                  //at least one pip within command.
-            doPipe(cmd);
-        }
-
-        else {
-            pid = fork();
-            
-            if (pid) {          //parent
-                pid = wait(&debug);
-            }
-
-            else {
-                tokenizeCommand();
-                
-                if (!strcmp(simpleCommand, "logout")) {               //handle logout seperately
-                    prints("Logging out . . .\n");
-                    exit(1);
-                }
-        
-                if (!strcmp(simpleCommand, "cd")) {
-                    prints("Change dir.\n");
-                }
-        
-                else {
-                    printf("simpleCommand within main: %s\n", simpleCommand);
-                    exec(cmd);
-                }
-
-            }
-            
+        if (!runCommand(cmd)) {
+            prints("Error running command.\n");
+            return -1;
         }
 
         prints("\n");

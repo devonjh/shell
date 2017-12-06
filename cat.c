@@ -1,9 +1,11 @@
 #include "ucode.c"
 
 int main(int argc, char *argv[ ]) {
-  int i, fd;
+  int i, fd, procNum;
   char c;
   char catBuf[1024];
+
+  procNum = getpid();
 
   if (argc == 2) {                  //a filename is present.
     
@@ -12,17 +14,20 @@ int main(int argc, char *argv[ ]) {
         exit(1);
     }
 
+    printf("Proc %d running cat.\n", procNum);
+
     prints("\n**********DEVON'S CAT... MEOW?**********\n\n");
 
-    while (i = read(fd, &c, 1)) {
-        //catBuf[i] = '\0';
-        if (c == '\n') {
-          i = write(1, &c, 1);
-          c = '\r';
-          i = write(1, &c, 1);
-        } else {
-          i = write(1, &c, 1);
-        }
+    /*i = read(fd, &c, 1);
+
+    while (i) {
+      mputc(c);
+      i = read(fd, &c, 1);
+    }*/
+
+    while (i = read(fd, catBuf, 1024)) {
+      catBuf[i] = '\0';
+      printf("%s", catBuf);
     }
 
     prints("\n****************************************\n\n");

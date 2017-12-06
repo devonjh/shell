@@ -72,7 +72,8 @@ int main(int argc, char *argv[ ]) {
     debug = startPage(fd);
 
     if (debug == -1) {
-        return 1;
+        close(fd);
+        exit(1);
     }
     
     while(1) {
@@ -94,8 +95,7 @@ int main(int argc, char *argv[ ]) {
         }
 
         if (debug == -1) {
-            close(fd);
-            return 0;
+            exit(1);
         }
     }
 }

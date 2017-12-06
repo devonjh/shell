@@ -117,5 +117,6 @@ int main(int argc, char *argv[]) {
 
     //Execute program specified in passwords file.
     printf("Executing '%s' program.\n\n", program);
+    //exec("dhSH");
     exec(program);
 }
