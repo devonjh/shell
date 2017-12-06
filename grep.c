@@ -64,5 +64,4 @@ int main(int argc, char *argv[ ]) {
     }
 
     prints("\n**********************************\n");
-    close (fd);
 }

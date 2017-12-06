@@ -18,9 +18,9 @@ int main(int argc, char *argv[ ]) {
 
     prints("\n**********DEVON'S CAT... MEOW?**********\n\n");
 
-    /*i = read(fd, &c, 1);
+    //i = read(fd, &c, 1);
 
-    while (i) {
+    /*while (i) {
       mputc(c);
       i = read(fd, &c, 1);
     }*/
@@ -42,19 +42,26 @@ int main(int argc, char *argv[ ]) {
 
       prints("\n**********DEVON'S CAT... MEOW?**********\n\n");
 
-      while (1) {
-          i = read(fd, &c, 1);
-
-          if (c == 13) {
-            c = '\n';
-          }
-
-          if (c == 4 || !i) {
-            prints("\n****************************************\n\n");
-            return;
-          }
-
+      i = read(fd, &c, 1);
+      
+      while (i) {
+        if (c == '\r') {
+          mputc('\n');
+          mputc('\r');
+        }
+        else {
           mputc(c);
+        }
+        
+        i = read(fd, &c, 1);
       }
+
+      /*while (i = read(fd, catBuf, 1024)) {
+        catBuf[i] = '\0';
+        printf("%s", catBuf);
+        print("\n");
+      }*/
+
+      exit(1);
   }
 }

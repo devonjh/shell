@@ -95,6 +95,7 @@ int main(int argc, char *argv[ ]) {
         }
 
         if (debug == -1) {
+            close(fd);
             exit(1);
         }
     }
