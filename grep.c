@@ -47,9 +47,11 @@ int main(int argc, char *argv[ ]) {
         fd = 0;
     }
 
-    if ((fd = open(argv[2], 0)) < 0) {
-        prints("ERROR opening file.\n");
-        exit(1);
+    else {
+        if ((fd = open(argv[2], 0)) < 0) {
+            prints("ERROR opening file.\n");
+            exit(1);
+        }
     }
 
     while (!eof) {

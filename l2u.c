@@ -6,9 +6,10 @@ int main(int argc, char *argv[]) {
 
     prints("\n********** DEVON'S L2U IN ACTION **********\n");
 
-    if (argc < 2) {
-        prints("Incorrect input given.\n");
-        exit(1);
+    if (argc == 1) {
+        fd1 = 0;
+        fd2 = 1;
+        toScreen = 1;
     }
 
     if (argc == 2) {

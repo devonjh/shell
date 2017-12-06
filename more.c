@@ -48,6 +48,7 @@ int main(int argc, char *argv[ ]) {
     char userInput;
     int debug;
     char c;
+    char tty[128];
 
 
     prints("\n********** DEVON'S MORE **********\n\n");
@@ -58,48 +59,43 @@ int main(int argc, char *argv[ ]) {
             prints("Error opening file.\n");
             exit(1);
         }
-
-        debug = startPage(fd);
-
-        while(1) {
-
-            userInput = getc();
-
-            switch(userInput) {
-                case '\r':
-                    debug = printNewLine(fd);
-                    break;
-                case 'q':
-                    mputc('\n');
-                    close(fd);
-                    return 0;
-                    break;
-            }
-
-            if (debug == -1) {
-                close(fd);
-                return 0;
-            }
-        }
-
-        return 0;
     }
 
-    else {                      //no filename given.        
-        fd = 0;
+    if(argc == 1) {                      //no filename given.        
+        fd = dup(0);
+        close(0);
+        gettty(tty);
+        printf("tty = %s\n", tty);
+        open(tty, O_RDONLY);
+    }
 
-        while (1) {
-            i = read(fd, &c, 1);
+    debug = startPage(fd);
 
-            if (c == 13) {
-            c = '\n';
-            }
+    if (debug == -1) {
+        return 1;
+    }
+    
+    while(1) {
 
-            if (c == 4 || !i) {
-            return;
-            }
+        userInput = getc();
 
-            mputc(c);
+        switch(userInput) {
+            case '\r':
+                debug = printNewLine(fd);
+                break;
+            case ' ':
+                debug = startPage(fd);
+                break;
+            case 'q':
+                mputc('\n');
+                close(fd);
+                return 0;
+                break;
+        }
+
+        if (debug == -1) {
+            close(fd);
+            return 0;
         }
     }
 }
