@@ -41,8 +41,6 @@ int main(int argc, char *argv[ ]) {
     char *buf;
     char line[1024];
 
-    prints("\n********** DEVON'S GREP **********\n\n");
-
     if (argc == 2) {
         fd = 0;
     }
@@ -62,6 +60,4 @@ int main(int argc, char *argv[ ]) {
             prints(line);
         }
     }
-
-    prints("\n**********************************\n");
 }

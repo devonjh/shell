@@ -4,8 +4,6 @@ int main(int argc, char *argv[]) {
     int fd1, fd2, i, toScreen = 0;
     char c;
 
-    prints("\n********** DEVON'S L2U IN ACTION **********\n");
-
     if (argc == 1) {
         fd1 = 0;
         fd2 = 1;
@@ -54,8 +52,6 @@ int main(int argc, char *argv[]) {
 
         i = read(fd1, &c, 1);
     }
-
-    prints("Lowercase to Uppercase conversion complete.\n\n");
 
     return 1;
 }

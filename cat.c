@@ -14,21 +14,11 @@ int main(int argc, char *argv[ ]) {
         exit(1);
     }
 
-    //i = read(fd, &c, 1);
-
-    /*while (i) {
-      mputc(c);
-      i = read(fd, &c, 1);
-    }*/
-
-    //printf("\n");
-
     while (i = read(fd, catBuf, 1024)) {
       catBuf[i] = '\0';
       printf("%s", catBuf);
     }
 
-    //printf("\n");
     close(fd);
 
   }
@@ -50,12 +40,6 @@ int main(int argc, char *argv[ ]) {
         
         i = read(fd, &c, 1);
       }
-
-      /*while (i = read(fd, catBuf, 1024)) {
-        catBuf[i] = '\0';
-        printf("%s", catBuf);
-        print("\n");
-      }*/
 
       exit(1);
   }

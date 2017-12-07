@@ -50,9 +50,6 @@ int main(int argc, char *argv[ ]) {
     char c;
     char tty[128];
 
-
-    prints("\n********** DEVON'S MORE **********\n\n");
-
     if (argc == 2) {                    //filename specified.
 
         if ((fd = open(argv[1], 0)) < 0) {
@@ -65,7 +62,6 @@ int main(int argc, char *argv[ ]) {
         fd = dup(0);
         close(0);
         gettty(tty);
-        printf("tty = %s\n", tty);
         open(tty, O_RDONLY);
     }
 
