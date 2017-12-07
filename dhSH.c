@@ -62,7 +62,7 @@ int doRedirect(char *cmd) {
 
     headCMD[i] = '\0';
 
-    //printf("headCMD = %s\n", headCMD);
+    printf("headCMD = %s\n", headCMD);
 
     for (i = rdIndex + 2; i < len; i++) {
         fileCMD[j] = cmd[i];
@@ -71,7 +71,8 @@ int doRedirect(char *cmd) {
 
     fileCMD[j] = '\0';
 
-    //printf("fileCMD = %s\n", fileCMD);
+    printf("fileCMD = %s", fileCMD);
+    //prints("test");
 
     //now handle the redirection.
     if (rdType == 1) {                          //input redirection.
@@ -132,24 +133,7 @@ int runCommand(char *cmd) {
         }
 
         else {
-            //prints("in else.\n");
-
-            //tokenizeCommand();
             
-            /*if (!strcmp(simpleCommand, "logout")) {               //handle logout seperately
-                prints("Logging out . . .\n");
-                exit(1);
-            }
-    
-            if (!strcmp(simpleCommand, "cd")) {
-                prints("Change dir.\n");
-            }
-    
-            else {
-                printf("simpleCommand within main: %s\n", simpleCommand);
-                exec(cmd);
-            }*/
-
             redirect = containsRedirection(cmd);
 
             printf("redirect = %d\n", redirect);
@@ -219,11 +203,11 @@ int pipeHead(char *cmd, char *headHolder) {
         i++;
     }
 
-    for(j = 0; j < i; j++) {
+    for(j = 0; j < i-1; j++) {
         headHolder[j] = cmd[j];
     }
 
-    headHolder[i] = 0;
+    headHolder[j] = 0;
 }
 
 int pipeTail(char *cmd, char *tailHolder) {
@@ -241,13 +225,16 @@ int pipeTail(char *cmd, char *tailHolder) {
 
 
 int doPipe(char *cmd) {
-    int pid, pd[2];
+    int pid, pd[2], redirect;
     char head[128], tail[128];
 
     pipe(pd);           //create pipe.
     
     pipeHead(cmd, head);
     pipeTail(cmd, tail);
+
+    printf("pipeHead = %s", head);
+    prints("test");
 
     pid = fork();
 
@@ -265,7 +252,17 @@ int doPipe(char *cmd) {
         }
 
         else {
-            exec(tail);
+            prints("in pid else.\n");
+            printf("tail = %s\n", tail);
+            redirect = containsRedirection(tail);
+
+            if (redirect) {
+                doRedirect(tail);
+            }
+            else {
+                exec(tail);
+            }
+            
         }
     }
 
@@ -273,10 +270,17 @@ int doPipe(char *cmd) {
         close(pd[0]);
         dup2(pd[1], 1);
 
-        //Have to check for file redirection.
+        prints("child in pipe.\n");
+        printf("head = %s\n", head);
 
-        //if no redirection.
-        exec(head);
+        redirect = containsRedirection(head);
+
+        if (redirect) {
+            doRedirect(head);
+        }
+        else {
+            exec(head);
+        }
     }
 
 }
