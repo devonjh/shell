@@ -21,7 +21,7 @@ int containsRedirection(char *cmd) {
 
     for (i = 0; i < len; i++) {
         if (tempCMD[i] == '>' || tempCMD[i] == '<') {
-            prints("redirection found.\n");
+            //prints("redirection found.\n");
             return 1;
         }
     }
@@ -29,7 +29,7 @@ int containsRedirection(char *cmd) {
 }
 
 int doRedirect(char *cmd) {
-    int i = 0, j = 0, rdIndex = 0, len = strlen(cmd), rdType = 0;
+    int i = 0, j = 0, rdIndex = 0, len = strlen(cmd), rdType = 0, fd;
     char headCMD[128], fileCMD[128];
 
     //get the headCMD from the original command.
@@ -52,8 +52,8 @@ int doRedirect(char *cmd) {
         }
     }
 
-    printf("rdType = %d\n", rdType);
-    printf("rdIndex = %d\n", rdIndex);
+    //printf("rdType = %d\n", rdType);
+    //printf("rdIndex = %d\n", rdIndex);
 
     //find 'head' command.
     for (i = 0; i < rdIndex-1; i++) {
@@ -62,7 +62,7 @@ int doRedirect(char *cmd) {
 
     headCMD[i] = '\0';
 
-    printf("headCMD = %s\n", headCMD);
+    //printf("headCMD = %s\n", headCMD);
 
     for (i = rdIndex + 2; i < len; i++) {
         fileCMD[j] = cmd[i];
@@ -71,7 +71,33 @@ int doRedirect(char *cmd) {
 
     fileCMD[j] = '\0';
 
-    printf("fileCMD = %s\n", fileCMD);
+    //printf("fileCMD = %s\n", fileCMD);
+
+    //now handle the redirection.
+    if (rdType == 1) {                          //input redirection.
+
+        if ((fd = (open(fileCMD, O_RDONLY))) < 0) {
+            prints("Error opening file within redirection.\n");
+            exit(1);
+        }
+
+        dup2(fd, 0);
+
+    }
+
+    if (rdType == 2) {                          //output redirection.
+
+        if ((fd = (open(fileCMD, 1 | 0100))) < 0) {
+            prints("Erroer opening file within redirection.\n");
+            exit(1);
+        }
+
+        dup2(fd, 1);
+    }
+
+    if (rdType == 3) {                          //Appending output redirection.
+
+    }
 
     exec(headCMD);
 }
@@ -99,14 +125,14 @@ int runCommand(char *cmd) {
 
         hasPipe = containsPipe(cmd);
 
-        printf("hasPipe = %d\n", hasPipe);
+        printf("Pipe Status: %d\n", hasPipe);
 
         if (hasPipe) {                  //at least one pip within command.
             doPipe(cmd);
         }
 
         else {
-            prints("in else.\n");
+            //prints("in else.\n");
 
             //tokenizeCommand();
             
