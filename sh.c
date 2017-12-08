@@ -98,6 +98,12 @@ int doRedirect(char *cmd) {
 
     if (rdType == 3) {                          //Appending output redirection.
 
+        if ((fd = open(fileCMD, O_CREAT | O_WRONLY | ((rdType == 1 || rdType == 2 || rdType == 3) ? O_APPEND : 0))) < 0) {
+            prints("error opening file for redirection.\n");
+            exit(1);
+        }
+
+        dup2(fd, 1);
     }
 
     exec(headCMD);
@@ -105,50 +111,81 @@ int doRedirect(char *cmd) {
 
 int runCommand(char *cmd) {
     int i = 0, hasPipe, debug = 0, pid, redirect;
+    char *tempDir, tempCMD;
 
     if ((strcmp(cmd, "\0")) == 0) {
         //prints("Invalid command.\n");
         return -1;
     }
 
-    pid = fork();
+    tokenizeCommand();
 
-    if (pid < 0) {
-        prints("Error forking child.\n");
+    if (strcmp(simpleCommand, "logout") == 0) {
+        prints("Logging out. . .\n");
         exit(1);
     }
-    
-    if (pid) {          //parent
-        pid = wait(&debug);
+
+    if (strcmp(simpleCommand, "cd") == 0) {
+        prints("Changing Directory.\n");
+
+        if (strcmp("cd", cmd) == 0) {
+            prints("Changing directory to root.\n");
+            chdir("/");
+            return 1;
+        }
+
+        tempDir = strtok(cmd, " ");
+
+        tempDir = strtok('\0', " ");
+
+        printf("tempDir = %s\n", tempDir);
+
+        chdir(tempDir);
+
+        return 1;
     }
 
     else {
 
-        hasPipe = containsPipe(cmd);
+        pid = fork();
 
-        printf("Pipe Status: %d\n", hasPipe);
-
-        if (hasPipe) {                  //at least one pip within command.
-            doPipe(cmd);
+        if (pid < 0) {
+            prints("Error forking child.\n");
+            exit(1);
+        }
+        
+        if (pid) {          //parent
+            pid = wait(&debug);
         }
 
         else {
-            
-            redirect = containsRedirection(cmd);
 
-            printf("redirect = %d\n", redirect);
+            hasPipe = containsPipe(cmd);
 
-            if (redirect) {
-                doRedirect(cmd);
+            printf("Pipe Status: %d\n", hasPipe);
+
+            if (hasPipe) {                  //at least one pip within command.
+                doPipe(cmd);
             }
 
             else {
-                exec(cmd);
-            } 
+                
+                redirect = containsRedirection(cmd);
+
+                printf("redirect = %d\n", redirect);
+
+                if (redirect) {
+                    doRedirect(cmd);
+                }
+
+                else {
+                    exec(cmd);
+                } 
+            }
         }
+        
+        return 1;
     }
-    
-    return 1;
 }
 
 int myMemset(char *string, int length) {
